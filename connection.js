@@ -6,12 +6,6 @@ function Connection(ip, username, password){
 	this.username = username;
 	this.password = password;
 
-	this.status = {};
-
-	this._update_status = function (){
-
-	}
-
 	this.run_command = function (command, callback){
 		var connection = new telnet();
 
@@ -49,16 +43,6 @@ function Connection(ip, username, password){
 			throw data;
 		});
 		connection.connect(params);
-	};
-
-	this.power_status = function (p){
-		this.run_command("pshow", function (response){
-			var regex = new RegExp("0" + p + ".*?\\|.*?\\|.*?(ON|OFF)", 'gm');
-
-			var data = regex.exec(response)[1];
-
-			console.log(data);
-		});
 	};
 }
 
