@@ -1,13 +1,18 @@
 {
   "name": "HowDoYouTurnThisOn",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Connect to pakedge p8 using telent, and turn stuff on and off",
-  "main": "power.js",
+  "main": "connection.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vingiesel/HowDoYouTurnThisOn.git"
   },
   "dependencies": {
     "lodash": "^3.10.0",
     "telnet-client": "^0.1.0"
-  }
+  },
+  "author": "Evan Giesel <evan.giesel@gmail.com>"
 }
