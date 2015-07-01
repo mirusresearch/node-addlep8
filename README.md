@@ -1,4 +1,4 @@
-# HowDoYouTurnThisOn
+# node-addlep8
 ### Command the Pakedge P8 using nodejs
 
 connection.js is the telnet wrapper. ```Connection.run_command("<args>")``` will create a telnet connection and run ```args``` on the PDU.
