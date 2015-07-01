@@ -40,6 +40,16 @@ function Manager(ip, username, password){
 			callback(true);
 		});
 	};
+
+	this.set_power_all = function(status, callback){
+		this.get_status(function (){
+			var state = (status === "ON" || Number(status) === 1)?"1":"0";
+			_.forEach(this.status, function (outlet){
+				conn.run_command("pset " + outlet.id + " " + state, function (){
+				});
+			}, this);
+		});
+	};
 }
 
 module.exports = Manager
