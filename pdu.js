@@ -1,55 +1,76 @@
 var Connection = require('./connection');
 var _ = require('lodash');
+var Promise = require("bluebird");
 
 function Manager(ip, username, password){
 	this.status = [];
 
-	var conn = new Connection(address, username, password);
+	var conn = new Connection(ip, username, password);
 
-	this._update_status = function (callback){
-		conn.run_command("pshow", function (response){
+	console.log(ip, username, password);
+
+	this._update_status = function (){
+		return conn.run_command("pshow").then(function (response){
 			var regex = new RegExp("(\\d{2}).*?\\|(.*?)\\|.*?(ON|OFF)", 'gm');
 
 			this.status = [];
 			var data = regex.exec(response);
 			while(data !== null){
-				this.status.push({id:data[1][1], name:data[2].trim(" "), status:data[3]});
+				this.status.push({id:data[1][1], name:data[2].trim(" "), status:data[3]==='ON'?1:0});
 				var data = regex.exec(response);
 			}
-		});
+			return Promise.resolve(this.status);
+		}.bind(this));
+	};
+
+	this.run_command = function (command){
+		return conn.run_command(command);
 	};
 
 	this.get_status = function(callback){
-		this._update_status(function (){
-			console.log(this.status);
-			return callback(this.status);
+		this._update_status().then(function(status){
+			callback(status);
 		});
 	};
 
 	this.get_power = function(outlet, callback){
-		this.get_status(function (status){
-			var selected = _.pick(status, function (item){
-				return (item.name === outlet || item.id === outlet);
+		this._update_status().then(function (current_status){
+			var list = _.filter(current_status, function (item){
+				return (item.name == outlet || item.id == outlet);
 			});
-			callback(selected?selected.status:null);
+			if (list.length > 0){
+				callback(null, list[0].current_status);
+			}else{
+				callback("No outlet with id '" + outlet + "'");
+			}
 		});
 	};
 	this.set_power = function(outlet, status, callback){
 		var state = (status === "ON" || Number(status) === 1)?"1":"0";
-		conn.run_command("pset " + outlet + " " + state, function (){
-			callback(true);
+		this._update_status().then(function (current_status){
+			var outlet_id;
+			try{
+				outlet_id = _.filter(current_status, function (item){return (item.name == outlet || item.id == outlet)})[0].id;
+			}catch(e){
+				callback("Could not find outlet '" + outlet + "'");
+			}
+			conn.run_command("pset " + outlet_id + " " + state).then(function (response){
+				callback(null, response);
+			}).catch(function (error){
+				callback(error);
+			});
 		});
 	};
 
 	this.set_power_all = function(status, callback){
-		this.get_status(function (){
-			var state = (status === "ON" || Number(status) === 1)?"1":"0";
-			_.forEach(this.status, function (outlet){
-				conn.run_command("pset " + outlet.id + " " + state, function (){
-				});
-			}, this);
+		var state = (status === "ON" || Number(status) === 1)?"1":"0";
+
+		conn.run_command("ps " + state).then(function (){
+			callback();
+		}).catch(function (error){
+			callback(error);
 		});
 	};
 }
 
-module.exports = Manager
+module.exports = Manager;

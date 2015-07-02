@@ -9,6 +9,12 @@ var address = process.argv[2];
 
 var conn = new Connection(address, "pakedge", "pakedgep");
 
-conn.run_command(arg, function (r){
-	console.log(r);
-});
+function success(data){
+	console.log(data);
+}
+
+function error(data){
+	console.log(data);
+}
+
+conn.run_command(arg).then(success, error);
