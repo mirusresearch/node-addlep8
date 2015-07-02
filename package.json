@@ -1,6 +1,6 @@
 {
   "name": "node-addlep8",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Connect to pakedge p8 using telent, and turn stuff on and off",
   "main": "pdu.js",
   "scripts": {
