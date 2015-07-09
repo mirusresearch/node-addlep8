@@ -52,9 +52,13 @@ Sets ```outlet```(id or name) to ```state```(1,0).
 Sets all outlets to ```state```(1,0)
 
 #### Setting up your PDU
-- First, connect both your computer and the P8 in a 192.168.1 network. Use your browser to navigate to http://192.168.1.210/, which is the P8’s web interface. Depending on how long ago you plugged in the P8, it may take about 3 minutes before the web interface is available.
-- Enter the Network Setup page, where you should be able to edit the “Static IP”. Do not hit submit unless you are done changing settings, as you will be disconnected. The new IP address must have the same subnet as the RPI.
-- After hitting submit, unplug the P8 from the current network and into the network containing the RPI. If you had to unplug the power to do so, remember that it will take a minute or two before the P8 is up and running again.
-- You should be able to navigate to the new IP address and access the web interface again. While you are changing settings, make sure to leave ‘Enable Telnet’, in System Control, turned on, as the RPI will not be able to access it otherwise.
+- First, connect both your computer and the P8 in a `192.168.1.XXX` network. Use your browser to navigate to `http://192.168.1.210/`, which is the P8’s web interface. Depending on how long ago you plugged in the P8, it may take about 3 minutes before the web interface is available.
+- Enter the `Network Setup` page, where you should be able to edit the `Static IP`.
+    - Do not hit submit unless you are done changing settings, as you will be disconnected.
+    - The new IP address must have the same subnet as the machine running this module.
+- After hitting submit, unplug the P8 from the current network and plug it into the network you normally will connect to it over.
+    - If you had to unplug the power to do so, remember that it will take a minute or two before the P8 is up and running again.
+- You should be able to navigate to the new IP address and access the web interface again.
+    - While you are changing settings, make sure to leave `Enable Telnet`, in `System Control`, **turned on**, as this module can't access it otherwise.
 
 **If you mess up any of these steps, don’t worry!** There is a tiny reset button that may or may not set you back to the first step! I haven’t tried it, but it should be perfectly safe…
