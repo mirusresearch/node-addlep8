@@ -62,3 +62,40 @@ Sets all outlets to ```state```(1,0)
     - While you are changing settings, make sure to leave `Enable Telnet`, in `System Control`, **turned on**, as this module can't access it otherwise.
 
 **If you mess up any of these steps, don’t worry!** There is a tiny reset button that may or may not set you back to the first step! I haven’t tried it, but it should be perfectly safe…
+
+#### P8 Command List
+
+**command**         | **description**
+-------------------:|-------------------------
+#ul                 | show userlist
+exit                | end the telnet session
+ver                 | show the hw/sw version
+#date               | show current device date
+#time               | show current device time
+temp                | read temperature sensor
+cura                | read current sensor "a"
+ssn 0x12345678      | show serial num
+sshow               | displays console ports configuration status
+pshow               | displays power outlet status
+ptshow              | displays power outlet timer information.
+*pset n v           | Sets power outlet #n to v(value 1-on, 0-off)
+*ps v               | Sets all power outlets to v(value 1-on, 0-off)
+*prb n              | Reboot power outlet #n
+*prsv n             | Reserve power outlet #n for current user
+*punrsv n mac       | Unreserve power outlet #n for current user
+mac                 | show the mac addr
+#acl 0/1            | Disable/Enable ACL (0=disable, 1=enable)
+#aclset id type mask| Set up the ACL - id(1-6), type(0=Not Care/1=Permit/2=Block), mask(ip)
+#web 0/1            | disable/enable web access
+#pop3 0/1           | disable/enable pop3 access
+#telnet 0/1/2       | config telnet access to disable/login_only/enable
+#telnetEcho 0/1     | disable/enable telnet echo
+#dhcp               | do dhcp routing
+#ip XXX.XXX.XXX.XXX | set network static ip
+#gw XXX.XXX.XXX.XXX | set network gateway
+#netmask 255.255.255.0 | set network netmask
+#ifconfig s         | do network interface config  (s = auto/dhcp/static)
+nwshow              | display network status
+#reboot             | reboot whole PDU
+help                | show help messages
+*!                  | Repeat the last command
