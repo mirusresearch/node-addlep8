@@ -11,10 +11,12 @@ var conn = new Connection(address, "pakedge", "pakedgep");
 
 function success(data){
 	console.log(data);
+	conn.close_connection();
 }
 
 function error(data){
 	console.log(data);
+	conn.close_connection();
 }
 
 conn.run_command(arg).then(success, error);

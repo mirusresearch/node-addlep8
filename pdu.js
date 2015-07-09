@@ -60,7 +60,8 @@ function Manager(ip, username, password){
 			}catch(e){
 				callback("Could not find outlet '" + outlet + "'");
 			}
-			conn.run_command("pset " + outlet_id + " " + power_state).then(function (){
+			var command = "pset " + outlet_id + " " + power_state;
+			conn.run_command(command).then(function (){
 				callback();
 			}).catch(function (error){
 				callback(error);

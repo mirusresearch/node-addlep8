@@ -9,3 +9,27 @@ pdu.get_status(function (error, data){
 		console.log(data);
 	}
 });
+
+pdu.set_power('1', 0, function (error, data){
+	if (error){
+		console.log(error);
+	}else{
+		console.log(data);
+	}
+});
+
+pdu.set_power('1', 1, function (error, data){
+	if (error){
+		console.log(error);
+	}else{
+		console.log(data);
+	}
+});
+
+pdu.set_power('1', 0, function (error, data){
+	if (error){
+		console.log(error);
+	}else{
+		console.log(data);
+	}
+});
