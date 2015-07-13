@@ -32,3 +32,5 @@ exports.test_status_response = function(test) {
 
 
 };
+
+exports.test_status_response(null);
