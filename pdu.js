@@ -1,4 +1,4 @@
-var uuid = require('uuid');
+// var uuid = require('uuid');
 var TelnetConn = require('telnet-client');
 var _ = require('lodash');
 
@@ -11,9 +11,9 @@ exports.PduConnection = function(hostname, username, password) {
 
     self.cmd_queue = [];
 
-    self.add_cmd = function(func, uuid) {
-        self.cmd_queue.push({func: func, uuid: uuid});
-        if (self.cmd_queue[0].uuid === uuid) {
+    self.add_cmd = function(func) {
+        self.cmd_queue.push(func);
+        if (self.cmd_queue[0] === func) {
             console.log("command added, and none before it.  running it.");
             func();
         }
@@ -22,7 +22,7 @@ exports.PduConnection = function(hostname, username, password) {
         self.cmd_queue.shift();
         if (self.cmd_queue.length > 0) {
             console.log("calling next command");
-            self.cmd_queue[0].func();
+            self.cmd_queue[0]();
         }
     };
 }
@@ -76,7 +76,7 @@ exports.run_command = function(pdu_conn, name, callback) {
 
         connection.connect(params);
     };
-    pdu_conn.add_cmd(the_func, uuid.v4());
+    pdu_conn.add_cmd(the_func);
     
 }
 
