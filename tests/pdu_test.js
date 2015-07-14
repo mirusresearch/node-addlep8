@@ -1,5 +1,5 @@
 
-var pdu = require("../pdu2.js");
+var pdu = require("../pdu.js");
 
 exports.test_status_response = function(test) {
 
