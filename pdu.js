@@ -17,6 +17,8 @@ exports.run_command = function(pdu_conn, name, callback) {
 
     connection.on('timeout', function() {
         console.log("connection timeout");
+        callback(null, "timeout");
+        // throw("timeout");
     });
 	connection.on('end', function() {
 		console.log("connection end");
@@ -25,12 +27,14 @@ exports.run_command = function(pdu_conn, name, callback) {
 		console.log("connection closing");
 	});
 	connection.on('error', function(error) {
-		throw(error);
+        console.log("error:", error);
+        callback(null, error);
+		// throw(error);
 	});
     connection.on('ready', function(prompt) {
         console.log("connection ready. prompt = " + prompt);
         connection.exec(name, function(response) {
-            callback(response);
+            callback(response, null);
             connection.end();
         });
     });
@@ -55,21 +59,19 @@ exports.run_command = function(pdu_conn, name, callback) {
     
 }
 
-exports.pshow = function() {
-    var pdu_conn = new exports.PduConnection('192.168.30.210', 'pakedge', 'pakedgep');
-
-    exports.run_command(pdu_conn, "pshow", function(response) {
-        console.log(response);
-        // var regex = new RegExp("(\\d{2}).*?\\|(.*?)\\|.*?(ON|OFF)", 'gm');
-        // var data = regex.exec(response);
-        // console.log("here");
-        console.log(exports.status_resp_to_obj(response));
+exports.pshow = function(pdu_conn, callback) {
+    exports.run_command(pdu_conn, "pshow", function(response, error) {
+        callback(exports.status_resp_to_obj(response), error);
     });
 };
 
 // exports.pshow();
 
 exports.status_resp_to_obj = function(status_resp) {
+    if (status_resp == null) {
+        return null;
+    }
+    // debugger;
     var status_lines = _.filter(status_resp.split("\n"), function(line) {
         return !_.startsWith(line, "*") &&
             line.length > 0 &&
