@@ -19,7 +19,7 @@ exports.PduConnection = function(hostname, username, password) {
         }
     };
     self.cmd_done = function() {
-        self.cmd_queue.shift()
+        self.cmd_queue.shift();
         if (self.cmd_queue.length > 0) {
             console.log("calling next command");
             self.cmd_queue[0].func();
