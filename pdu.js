@@ -1,4 +1,4 @@
-
+var uuid = require('uuid');
 var TelnetConn = require('telnet-client');
 var _ = require('lodash');
 
@@ -9,53 +9,74 @@ exports.PduConnection = function(hostname, username, password) {
     self.username = username;
     self.password = password;
 
+    self.cmd_queue = [];
+
+    self.add_cmd = function(func, uuid) {
+        self.cmd_queue.push({func: func, uuid: uuid});
+        if (self.cmd_queue[0].uuid === uuid) {
+            console.log("command added, and none before it.  running it.");
+            func();
+        }
+    };
+    self.cmd_done = function() {
+        self.cmd_queue.shift()
+        if (self.cmd_queue.length > 0) {
+            console.log("calling next command");
+            self.cmd_queue[0].func();
+        }
+    };
 }
 
 exports.run_command = function(pdu_conn, name, callback) {
 
-    var connection = new TelnetConn();
+    // var func_id = guid.create();
+    var the_func = function() {
+        var connection = new TelnetConn();
 
-    connection.on('timeout', function() {
-        console.log("connection timeout");
-        callback(null, "timeout");
-        // throw("timeout");
-    });
-	connection.on('end', function() {
-		console.log("connection end");
-	});
-	connection.on('close', function() {
-		console.log("connection closing");
-	});
-	connection.on('error', function(error) {
-        console.log("error:", error);
-        callback(null, error);
-		// throw(error);
-	});
-    connection.on('ready', function(prompt) {
-        console.log("connection ready. prompt = " + prompt);
-        connection.exec(name, function(response) {
-            callback(response, null);
-            connection.end();
+        connection.on('timeout', function() {
+            console.log("connection timeout");
+            callback(null, "timeout");
+            // throw("timeout");
         });
-    });
-    connection.on('connect', function() {
-        console.log("connection connect");
-    });
-    connection.on('writedone', function() {
-        console.log("connection writedone");
-    });
-        
-    var params = {
-        host: pdu_conn.hostname,
-        username: pdu_conn.username,
-        password: pdu_conn.password,
-        shellPrompt: "(.*)> $",
-        timeout: 2000,
-        loginPrompt: "enter user name:",
-        passwordPrompt: "enter password",
+        connection.on('end', function() {
+            console.log("connection end");
+        });
+        connection.on('close', function() {
+            console.log("connection closing");
+            pdu_conn.cmd_done();
+        });
+        connection.on('error', function(error) {
+            console.log("error:", error);
+            callback(null, error);
+            // throw(error);
+        });
+        connection.on('ready', function(prompt) {
+            console.log("connection ready. prompt = " + prompt);
+            connection.exec(name, function(response) {
+                callback(response, null);
+                connection.end();
+            });
+        });
+        connection.on('connect', function() {
+            console.log("connection connect");
+        });
+        connection.on('writedone', function() {
+            console.log("connection writedone");
+        });
+
+        var params = {
+            host: pdu_conn.hostname,
+            username: pdu_conn.username,
+            password: pdu_conn.password,
+            shellPrompt: "(.*)> $",
+            timeout: 2000,
+            loginPrompt: "enter user name:",
+            passwordPrompt: "enter password",
+        };
+
+        connection.connect(params);
     };
-    
-    connection.connect(params);
+    pdu_conn.add_cmd(the_func, uuid.v4());
     
 }
 

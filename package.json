@@ -1,6 +1,6 @@
 {
   "name": "node-addlep8",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Connect to pakedge p8 using telent, and turn stuff on and off",
   "main": "pdu.js",
   "scripts": {
@@ -11,9 +11,10 @@
     "url": "git://github.com/mirusresearch/node-addlep8.git"
   },
   "dependencies": {
-    "bluebird": "^2.9.30",
-    "lodash": "^3.10.0",
-    "telnet-client": "^0.1.0"
+      "bluebird": "^2.9.30",
+      "lodash": "^3.10.0",
+      "telnet-client": "^0.1.0",
+      "uuid": "2.0.1"
   },
   "author": "Evan Giesel <evan.giesel@gmail.com>"
 }
