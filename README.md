@@ -70,8 +70,8 @@ Sets all outlets to ```state```(1,0)
 ul                  | show userlist
 exit                | end the telnet session
 ver                 | show the hw/sw version
-#date               | show current device date
-#time               | show current device time
+date                | show current device date
+time                | show current device time
 temp                | read temperature sensor
 cura                | read current sensor "a"
 ssn 0x12345678      | show serial num
