@@ -67,7 +67,7 @@ Sets all outlets to ```state```(1,0)
 
 **command**         | **description**
 -------------------:|-------------------------
-#ul                 | show userlist
+ul                  | show userlist
 exit                | end the telnet session
 ver                 | show the hw/sw version
 #date               | show current device date
