@@ -28,9 +28,23 @@ exports.test_status_response = function(test) {
     ];
     var sample_resp = sample_resp_arr.join("\n");
 
-    console.log(pdu.status_resp_to_obj(sample_resp));
+    // console.log(pdu.status_resp_to_obj(sample_resp));
+    var status_resp = pdu.status_resp_to_obj(sample_resp);
+    console.log("status_resp:", status_resp);
+
+    test.ok(status_resp.length == 8);
+
+    var fstatus = status_resp[0];
+    test.ok(fstatus.port === '01');
+    test.ok(fstatus.name === 'Modem');
+    test.ok(fstatus.status === 'ON');
+    test.ok(fstatus.reserved_by === 'Open');
+    test.ok(fstatus.timer === 'OFF');
+    test.ok(fstatus.autoping === 'OFF');
+
+    test.done();
 
 
 };
 
-exports.test_status_response(null);
+// exports.test_status_response(null);
