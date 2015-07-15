@@ -13,7 +13,7 @@
   "dependencies": {
       "bluebird": "^2.9.30",
       "lodash": "^3.10.0",
-      "telnet-client": "^0.1.0",
+      "telnet-client": "^0.1.0"
   },
   "author": "Evan Giesel <evan.giesel@gmail.com>"
 }
