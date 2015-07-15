@@ -1,28 +1,33 @@
 
 
 pdu = require("./pdu.js");
+_ = require('lodash');
 
-// wrong username
-// var pconn = new pdu.PduConnection('192.168.30.210', 'pagedge', 'pakedgep');
 var pconn = new pdu.PduConnection('192.168.30.195', 'pakedge', 'pakedgep');
+// wrong username
+// var pconn = new pdu.PduConnection('192.168.30.195', 'pagedge', 'pakedgep');
+// wrong ip
+// var pconn = new pdu.PduConnection('192.168.30.1', 'pakedge', 'pakedgep');
 
-pdu.pshow(pconn, function(res, err) {
-    // debugger;
-    console.log("res1:", res);
-    console.log("err1:", err);
-});
 
-pdu.pshow(pconn, function(res, err) {
-    console.log("res2:", res);
-    console.log("err2:", err);
-});
+var log_func_creator = function(num) {
+    return function(res, err) {
+        // console.log("res" + num + ":", res);
+        if (err == null && res != null) {
+            // console.log("success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + num);
+        } else {
+            // console.log("success" + num + ":", res != null);
+            console.log("err" + num + ":", err);
+        }
+    };
+};
 
-pdu.pshow(pconn, function(res, err) {
-    console.log("res3:", res);
-    console.log("err3:", err);
-});
+// pdu.pshow(pconn, log_func_creator(1));
 
-pdu.pshow(pconn, function(res, err) {
-    console.log("res4:", res);
-    console.log("err4:", err);
-});
+// _.delay(pdu.pshow, 500, pconn, log_func_creator(2));
+
+
+
+for (var i = 0; i < 1400; i++) {
+    pdu.pshow(pconn, log_func_creator(i + 1));
+}

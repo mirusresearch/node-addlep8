@@ -1,6 +1,7 @@
 // var uuid = require('uuid');
 var TelnetConn = require('telnet-client');
 var _ = require('lodash');
+// var NEXT_CMD_DELAY = 1000; // 1 second between commands
 
 exports.PduConnection = function(hostname, username, password) {
     var self = this;
@@ -10,66 +11,70 @@ exports.PduConnection = function(hostname, username, password) {
     self.password = password;
 
     self.cmd_queue = [];
+    self.NEXT_CMD_DELAY = 2000; // in ms
+    self.last_cmd_time = null;
 
     self.add_cmd = function(func) {
         self.cmd_queue.push(func);
+        var now = new Date();
+        var since_last = now - self.last_cmd_time;
+        var cmd_delay = self.NEXT_CMD_DELAY - since_last;
+        cmd_delay = (cmd_delay > 0) ? cmd_delay : 0;
         if (self.cmd_queue[0] === func) {
-            console.log("command added, and none before it.  running it.");
-            func();
+            // console.log("command added, and none before it.  running it. delay = " + cmd_delay);
+            setTimeout(func, cmd_delay);
         }
     };
     self.cmd_done = function() {
+        self.last_cmd_time = new Date();
         self.cmd_queue.shift();
         if (self.cmd_queue.length > 0) {
-            console.log("calling next command");
-            self.cmd_queue[0]();
+            // console.log("calling next command, delay = " + self.NEXT_CMD_DELAY);
+            setTimeout(self.cmd_queue[0], self.NEXT_CMD_DELAY); // delay 1 sec between commands
         }
     };
 }
 
 exports.run_command = function(pdu_conn, name, callback) {
 
-    // var func_id = guid.create();
     var the_func = function() {
         var connection = new TelnetConn();
 
         connection.on('timeout', function() {
             console.log("connection timeout");
-            callback(null, "timeout");
-            // throw("timeout");
+            callback(null, "timeout (possible bad login creds)");
+            connection.destroy();
         });
-        connection.on('end', function() {
-            console.log("connection end");
-        });
+        // connection.on('end', function() {
+        //     console.log("connection end");
+        // });
         connection.on('close', function() {
-            console.log("connection closing");
+            // console.log("connection closed");
             pdu_conn.cmd_done();
         });
         connection.on('error', function(error) {
-            console.log("error:", error);
             callback(null, error);
-            // throw(error);
         });
         connection.on('ready', function(prompt) {
-            console.log("connection ready. prompt = " + prompt);
+            // console.log("connection ready. prompt = " + prompt);
             connection.exec(name, function(response) {
                 callback(response, null);
                 connection.end();
             });
         });
-        connection.on('connect', function() {
-            console.log("connection connect");
-        });
-        connection.on('writedone', function() {
-            console.log("connection writedone");
-        });
+        // connection.on('connect', function() {
+        //     console.log("connection connect");
+        // });
+        // connection.on('writedone', function() {
+        //     console.log("connection writedone");
+        // });
 
         var params = {
             host: pdu_conn.hostname,
             username: pdu_conn.username,
             password: pdu_conn.password,
             shellPrompt: "(.*)> $",
-            timeout: 2000,
+            timeout: 40, // app. 3 seconds - not sure why, maybe units are tenths of seconds. also this figure doesn't seem constant.
             loginPrompt: "enter user name:",
             passwordPrompt: "enter password",
         };
